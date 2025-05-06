@@ -1,4 +1,5 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:beanchain/features/coffee/presentation/pages/qr_code_page.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,25 +17,27 @@ class HomePage extends StatelessWidget {
             children: [
               SizedBox(
                 width: double.infinity,
-                height: 300,
+                height: 250,
                 child: Image.asset(
                   "assets/images/coffee.jpg",
                   fit: BoxFit.cover,
                 ),
               ),
-              Align(
-                alignment: Alignment.center,
-                child: Text(
-                  "Coffee Tracker",
-                  style: GoogleFonts.poppins(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
+              Positioned.fill(
+                child: Center(
+                  child: Text(
+                    "Coffee Tracker",
+                    style: GoogleFonts.poppins(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
             ],
           ),
+
           // we need
           Expanded(
             child: Container(
@@ -51,11 +54,11 @@ class HomePage extends StatelessWidget {
                   color: Colors.white.withOpacity(
                     0.85,
                   ), // soft overlay for readability
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                 ),
                 child: Column(
                   children: [
-                    SizedBox(height: 30),
+                    SizedBox(height: 50),
                     Center(
                       child: AnimatedTextKit(
                         repeatForever: true,
@@ -94,6 +97,12 @@ class HomePage extends StatelessWidget {
                         ElevatedButton.icon(
                           onPressed: () {
                             // naviage to
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => QRScannerPage(),
+                              ),
+                            );
                           },
                           icon: Icon(Icons.qr_code_scanner_rounded),
                           label: Text(
@@ -109,22 +118,7 @@ class HomePage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(height: 20),
-                        TextButton(
-                          onPressed: () {
-                            if (isLoggedIn) {
-                            } else {}
-                          },
-                          child: Text(
-                            'Go to Report',
-                            style: GoogleFonts.poppins(
-                              fontSize: 18,
-                              color: Colors.brown[900],
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
+                        SizedBox(height: 40),
                       ],
                     ),
                   ],

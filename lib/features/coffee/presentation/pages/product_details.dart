@@ -1,8 +1,12 @@
 import 'package:beanchain/features/coffee/data/models/product.dart';
-import 'package:beanchain/features/coffee/presentation/pages/price_breakdown.dart';
-import 'package:beanchain/features/coffee/presentation/pages/stage_detail.dart';
-import 'package:beanchain/features/coffee/presentation/pages/supply_chain_management.dart';
+import 'package:beanchain/features/coffee/presentation/pages/feedback_page.dart';
+import 'package:beanchain/features/coffee/presentation/widgets/info_box.dart';
+import 'package:beanchain/features/coffee/presentation/widgets/price_box.dart';
+import 'package:beanchain/features/coffee/presentation/widgets/price_breakdown.dart';
+import 'package:beanchain/features/coffee/presentation/widgets/stage_detail.dart';
+import 'package:beanchain/features/coffee/presentation/widgets/supply_chain_management.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final Product product;
@@ -22,17 +26,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.brown,
         title: Center(
           child: const Text(
             "Product Details",
-            style: TextStyle(color: Colors.brown),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),
           ),
         ),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Fancy image with overlay title and description
           Stack(
             children: [
               ClipRRect(
@@ -92,7 +96,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
           const SizedBox(height: 24),
 
-          // Info grid
           GridView(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -100,13 +103,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               crossAxisCount: 2,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              mainAxisExtent: 55, // Minimized height
+              mainAxisExtent: 55,
             ),
             children: [
-              _InfoBox(label: 'Region', value: product.region),
-              _InfoBox(label: 'Altitude', value: '${product.farmAltitude}m'),
-              _InfoBox(label: 'Bean Type', value: product.beanType),
-              _InfoBox(
+              InfoBox(label: 'Region', value: product.region),
+              InfoBox(label: 'Altitude', value: '${product.farmAltitude}m'),
+              InfoBox(label: 'Bean Type', value: product.beanType),
+              InfoBox(
                 label: 'Harvest Year',
                 value: product.harvestYear.toString(),
               ),
@@ -115,10 +118,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
           const SizedBox(height: 24),
 
-          // Farm → Retail Price
           Row(
             children: [
-              _PriceBox(
+              PriceBox(
                 label: "Farm Price",
                 price: product.initialPrice,
                 color: Colors.green,
@@ -126,7 +128,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               const Spacer(),
               const Icon(Icons.arrow_forward, color: Colors.grey),
               const Spacer(),
-              _PriceBox(
+              PriceBox(
                 label: "Retail Price",
                 price: product.finalPrice,
                 color: Colors.orange,
@@ -136,7 +138,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
           const SizedBox(height: 15),
 
-          // Timeline
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
@@ -168,94 +169,39 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           ),
           const SizedBox(height: 8),
           PriceBreakdown(stages: product.stages),
-        ],
-      ),
-    );
-  }
-}
+          const SizedBox(height: 10),
 
-class _InfoBox extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _InfoBox({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.08),
-            blurRadius: 2,
-            offset: const Offset(0, 1),
-          ),
-        ],
-        border: Border.all(color: Colors.grey.shade100),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            label.toUpperCase(),
-            style: const TextStyle(
-              fontSize: 9.5,
-              color: Colors.grey,
-              fontWeight: FontWeight.w500,
-              letterSpacing: 0.5,
-            ),
-          ),
-          const SizedBox(height: 1),
-          Text(
-            value,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 12.5,
-              overflow: TextOverflow.ellipsis,
-            ),
-            maxLines: 1,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PriceBox extends StatelessWidget {
-  final String label;
-  final double price;
-  final Color color;
-
-  const _PriceBox({
-    required this.label,
-    required this.price,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 120,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color),
-      ),
-      child: Column(
-        children: [
-          Text(label, style: TextStyle(fontSize: 12, color: color)),
-          const SizedBox(height: 4),
-          Text(
-            '\$${price.toStringAsFixed(2)}',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: color,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const IssueReportPage(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.feedback_rounded, color: Colors.white),
+                label: Text(
+                  "Report an Issue",
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.brown[700],
+                  elevation: 3,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
             ),
           ),
         ],

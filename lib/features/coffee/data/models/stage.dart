@@ -1,5 +1,5 @@
 class Stage {
-  final String id; // Added id as part of the class
+  final String id;
   final String name;
   final String location;
   final DateTime timestamp;
@@ -15,10 +15,9 @@ class Stage {
     required this.price,
   });
 
-  // Factory method to create a Stage from a JSON object
   factory Stage.fromJson(Map<String, dynamic> json) {
     return Stage(
-      id: json['id'], // Parsing the id from the JSON
+      id: json['id'],
       name: json['name'],
       location: json['location'],
       timestamp: DateTime.parse(json['timestamp']),
@@ -27,7 +26,6 @@ class Stage {
     );
   }
 
-  // Method to convert Stage to JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
