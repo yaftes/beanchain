@@ -68,6 +68,8 @@ class _RegisterPageState extends State<RegisterPage>
       print("Registering user: $name, $email");
       // TODO: Add Firebase or backend logic
     }
+
+    
   }
 
   @override
