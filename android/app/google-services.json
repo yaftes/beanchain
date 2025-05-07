@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "272570611131",
+    "project_id": "beanchain-9c90a",
+    "storage_bucket": "beanchain-9c90a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:272570611131:android:667585252a34b6cc73c09e",
+        "android_client_info": {
+          "package_name": "com.example.beanchain"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCI4PYeGXaPYjYGT1OpWFAJY6GDxd2iuzM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

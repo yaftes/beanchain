@@ -51,9 +51,7 @@ class HomePage extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(
-                    0.85,
-                  ), // soft overlay for readability
+                  color: Colors.white.withOpacity(0.85),
                   borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                 ),
                 child: Column(

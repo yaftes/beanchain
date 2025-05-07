@@ -1,3 +1,5 @@
+import 'package:beanchain/features/auth/data/services/auth_services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -12,19 +14,19 @@ class IssueReportPage extends StatefulWidget {
 }
 
 class _IssueReportPageState extends State<IssueReportPage> {
+  final _authService = AuthServices();
   final _formKey = GlobalKey<FormState>();
   final _batchIdController = TextEditingController();
   final _descriptionController = TextEditingController();
   String? _selectedIssue;
   bool _isSubmitting = false;
-  File? _pickedImage; // Variable to store the picked image file
+  File? _pickedImage;
 
   final List<String> _issueTypes = [
-    'Smell Problem',
-    'Bad Taste',
-    'Packaging Damage',
-    'Incorrect Info',
-    'Mold or Foreign Object',
+    'Packaging Issue',
+    'Quality Issue',
+    'Delivery Issue',
+    'Taste Issue',
     'Other',
   ];
 
@@ -59,11 +61,10 @@ class _IssueReportPageState extends State<IssueReportPage> {
     }
   }
 
-  // Function to pick an image from gallery or camera
   Future<void> _pickImage() async {
     final ImagePicker _picker = ImagePicker();
     final XFile? pickedFile = await _picker.pickImage(
-      source: ImageSource.gallery, // Change to ImageSource.camera for camera
+      source: ImageSource.gallery,
     );
     if (pickedFile != null) {
       setState(() {
@@ -72,6 +73,18 @@ class _IssueReportPageState extends State<IssueReportPage> {
     }
   }
 
+  void _removeImage() {
+    setState(() {
+      _pickedImage = null;
+    });
+  }
+
+  String _getUsernameFromEmail(String email) {
+    return email.split('@')[0];
+  }
+
+  final String _userEmail = FirebaseAuth.instance.currentUser?.email ?? "";
+
   @override
   void dispose() {
     _batchIdController.dispose();
@@ -79,18 +92,64 @@ class _IssueReportPageState extends State<IssueReportPage> {
     super.dispose();
   }
 
+  void _showSignOutDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Are you sure you want to log out?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel', style: GoogleFonts.poppins()),
+            ),
+            TextButton(
+              onPressed: () async {
+                await _authService.signOut();
+                Navigator.of(context).pop();
+              },
+              child: Text('Logout', style: GoogleFonts.poppins()),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    String username = _getUsernameFromEmail(_userEmail);
     return Scaffold(
       backgroundColor: Colors.brown[50],
       appBar: AppBar(
         backgroundColor: Colors.brown[700],
-        title: Text(
-          'Report Coffee Issue',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-        ),
-        centerTitle: true,
         foregroundColor: Colors.white,
+        title: Text(
+          username,
+          style: GoogleFonts.poppins(color: Colors.white, fontSize: 14),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: _showSignOutDialog,
+                  child: Text(
+                    'Sign Out',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -122,7 +181,6 @@ class _IssueReportPageState extends State<IssueReportPage> {
               ),
               SizedBox(height: 32),
 
-              // Batch ID
               TextFormField(
                 controller: _batchIdController,
                 style: GoogleFonts.poppins(),
@@ -142,7 +200,6 @@ class _IssueReportPageState extends State<IssueReportPage> {
               ),
               SizedBox(height: 20),
 
-              // Issue Type Dropdown
               DropdownButtonFormField<String>(
                 value: _selectedIssue,
                 items:
@@ -163,7 +220,6 @@ class _IssueReportPageState extends State<IssueReportPage> {
               ),
               SizedBox(height: 20),
 
-              // Description Field
               TextFormField(
                 controller: _descriptionController,
                 maxLines: 5,
@@ -183,7 +239,6 @@ class _IssueReportPageState extends State<IssueReportPage> {
               ),
               SizedBox(height: 20),
 
-              // Report Date (readonly)
               TextFormField(
                 initialValue: _currentDate(),
                 readOnly: true,
@@ -197,21 +252,23 @@ class _IssueReportPageState extends State<IssueReportPage> {
               ),
               SizedBox(height: 20),
 
-              // Placeholder for Photo Upload
-              OutlinedButton.icon(
-                onPressed: _pickImage,
-                icon: Icon(Icons.photo_camera),
-                label: Text(
-                  _pickedImage == null
-                      ? "Upload Photo (optional)"
-                      : "Photo Selected",
-                ),
-                style: OutlinedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 14),
-                  foregroundColor: Colors.brown[800],
-                  side: BorderSide(color: Colors.brown.shade300),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: _pickImage,
+                  icon: Icon(Icons.photo_camera),
+                  label: Text(
+                    _pickedImage == null
+                        ? "Upload Photo (optional)"
+                        : "Photo Selected",
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                    foregroundColor: Colors.brown[800],
+                    side: BorderSide(color: Colors.brown.shade300),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
               ),
@@ -219,13 +276,22 @@ class _IssueReportPageState extends State<IssueReportPage> {
 
               // Show selected photo if any
               if (_pickedImage != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 12.0),
-                  child: Image.file(_pickedImage!, height: 150),
+                Row(
+                  children: [
+                    Image.file(
+                      _pickedImage!,
+                      height: 150,
+                      width: 150,
+                      fit: BoxFit.cover,
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.close, color: Colors.red),
+                      onPressed: _removeImage,
+                    ),
+                  ],
                 ),
               SizedBox(height: 30),
 
-              // Submit Button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(

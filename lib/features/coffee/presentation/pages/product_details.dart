@@ -1,5 +1,6 @@
+import 'package:beanchain/features/auth/presentation/pages/auth_gate.dart';
 import 'package:beanchain/features/coffee/data/models/product.dart';
-import 'package:beanchain/features/coffee/presentation/pages/feedback_page.dart';
+import 'package:beanchain/features/coffee/presentation/pages/issue_report_page.dart';
 import 'package:beanchain/features/coffee/presentation/widgets/info_box.dart';
 import 'package:beanchain/features/coffee/presentation/widgets/price_box.dart';
 import 'package:beanchain/features/coffee/presentation/widgets/price_breakdown.dart';
@@ -179,9 +180,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const IssueReportPage(),
-                    ),
+                    MaterialPageRoute(builder: (context) => const AuthGate()),
                   );
                 },
                 icon: const Icon(Icons.feedback_rounded, color: Colors.white),

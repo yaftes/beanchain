@@ -36,8 +36,6 @@ class _QRScannerPageState extends State<QRScannerPage> {
     await Future.delayed(Duration(seconds: 2)); // simulate API
 
     if (!mounted) return;
-
-    // TODO: Replace with real navigation and data
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -89,7 +87,6 @@ class _QRScannerPageState extends State<QRScannerPage> {
             ),
           ),
 
-          // Loading indicator
           if (_isLoading)
             Container(
               color: Colors.black.withOpacity(0.6),
@@ -98,7 +95,6 @@ class _QRScannerPageState extends State<QRScannerPage> {
               ),
             ),
 
-          // Bottom hint text
           Positioned(
             bottom: 30,
             left: 0,
