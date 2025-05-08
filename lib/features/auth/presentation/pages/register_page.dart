@@ -15,7 +15,6 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage>
     with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmController = TextEditingController();
@@ -50,7 +49,6 @@ class _RegisterPageState extends State<RegisterPage>
   @override
   void dispose() {
     _animationController.dispose();
-    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmController.dispose();
@@ -140,21 +138,7 @@ class _RegisterPageState extends State<RegisterPage>
                         style: GoogleFonts.poppins(color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 40),
 
-                      TextFormField(
-                        controller: _nameController,
-                        decoration: buildinputDecoration(
-                          "Full Name",
-                          "Luna Coffee",
-                          Icons.person,
-                        ),
-                        validator:
-                            (value) =>
-                                value == null || value.isEmpty
-                                    ? "Name is required"
-                                    : null,
-                      ),
                       const SizedBox(height: 20),
 
                       TextFormField(
@@ -239,7 +223,7 @@ class _RegisterPageState extends State<RegisterPage>
 
                       GestureDetector(
                         onTap:
-                            () => Navigator.push(
+                            () => Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => const LoginPage(),

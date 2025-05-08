@@ -28,7 +28,7 @@ class HomePage extends StatelessWidget {
                   child: Text(
                     "Coffee Tracker",
                     style: GoogleFonts.poppins(
-                      fontSize: 32,
+                      fontSize: 30,
                       fontWeight: FontWeight.w500,
                       color: Colors.white,
                     ),
@@ -38,7 +38,6 @@ class HomePage extends StatelessWidget {
             ],
           ),
 
-          // we need
           Expanded(
             child: Container(
               width: double.infinity,
@@ -77,7 +76,7 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 12),
+                      padding: const EdgeInsets.only(top: 20),
                       child: Text(
                         'Track your coffee journey from bean to cup and learn about the journey each coffee takes to reach you.',
                         style: GoogleFonts.roboto(
