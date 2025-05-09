@@ -1,26 +1,26 @@
 import 'package:beanchain/features/auth/data/services/auth_services.dart';
+import 'package:beanchain/features/coffee/data/services/issue_report_service.dart';
+import 'package:beanchain/features/coffee/presentation/pages/my_reports_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 
 class IssueReportPage extends StatefulWidget {
   const IssueReportPage({super.key});
-
   @override
   State<IssueReportPage> createState() => _IssueReportPageState();
 }
 
 class _IssueReportPageState extends State<IssueReportPage> {
+  final _issueReportService = IssueReportService();
   final _authService = AuthServices();
   final _formKey = GlobalKey<FormState>();
   final _batchIdController = TextEditingController();
   final _descriptionController = TextEditingController();
+
   String? _selectedIssue;
   bool _isSubmitting = false;
-  File? _pickedImage;
 
   final List<String> _issueTypes = [
     'Packaging Issue',
@@ -34,12 +34,17 @@ class _IssueReportPageState extends State<IssueReportPage> {
     return DateFormat('yyyy-MM-dd').format(DateTime.now());
   }
 
-  Future<void> _submitReport() async {
+  Future<void> _submitReport(BuildContext context) async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isSubmitting = true);
 
     try {
+      await _issueReportService.createIssueReport(
+        batchId: _batchIdController.text,
+        issueType: _selectedIssue ?? "",
+        description: _descriptionController.text,
+      );
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Issue reported successfully!'),
@@ -61,24 +66,6 @@ class _IssueReportPageState extends State<IssueReportPage> {
     }
   }
 
-  Future<void> _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? pickedFile = await _picker.pickImage(
-      source: ImageSource.gallery,
-    );
-    if (pickedFile != null) {
-      setState(() {
-        _pickedImage = File(pickedFile.path);
-      });
-    }
-  }
-
-  void _removeImage() {
-    setState(() {
-      _pickedImage = null;
-    });
-  }
-
   String _getUsernameFromEmail(String email) {
     return email.split('@')[0];
   }
@@ -96,23 +83,78 @@ class _IssueReportPageState extends State<IssueReportPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Are you sure you want to log out?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel', style: GoogleFonts.poppins()),
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.logout, size: 48, color: Colors.redAccent),
+                SizedBox(height: 16),
+                Text(
+                  'Log Out',
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.brown[800],
+                  ),
+                ),
+                SizedBox(height: 12),
+                Text(
+                  'Are you sure you want to sign out?',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    color: Colors.grey[700],
+                  ),
+                ),
+                SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        side: BorderSide(color: Colors.brown),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                      ),
+                      child: Text(
+                        'Cancel',
+                        style: GoogleFonts.poppins(color: Colors.brown),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        await _authService.signOut();
+                        Navigator.of(context).pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.redAccent,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                      ),
+                      child: Text('Sign Out', style: GoogleFonts.poppins()),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            TextButton(
-              onPressed: () async {
-                await _authService.signOut();
-                Navigator.of(context).pop();
-              },
-              child: Text('Logout', style: GoogleFonts.poppins()),
-            ),
-          ],
+          ),
         );
       },
     );
@@ -126,31 +168,51 @@ class _IssueReportPageState extends State<IssueReportPage> {
       appBar: AppBar(
         backgroundColor: Colors.brown[700],
         foregroundColor: Colors.white,
-        title: Text(
-          username,
-          style: GoogleFonts.poppins(color: Colors.white, fontSize: 14),
+        title: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: Colors.brown[300],
+              child: Text(
+                username.isNotEmpty ? username[0].toUpperCase() : '?',
+                style: GoogleFonts.poppins(color: Colors.white),
+              ),
+            ),
+            SizedBox(width: 10),
+            Text(
+              username,
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                GestureDetector(
-                  onTap: _showSignOutDialog,
-                  child: Text(
-                    'Sign Out',
-                    style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
+          PopupMenuButton<String>(
+            icon: Icon(Icons.more_vert, color: Colors.white),
+            onSelected: (String value) {
+              if (value == 'logout') {
+                _showSignOutDialog();
+              }
+            },
+            itemBuilder:
+                (BuildContext context) => [
+                  PopupMenuItem<String>(
+                    value: 'logout',
+                    child: Row(
+                      children: [
+                        Icon(Icons.logout, color: Colors.redAccent),
+                        SizedBox(width: 10),
+                        Text('Sign Out', style: GoogleFonts.poppins()),
+                      ],
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
           ),
         ],
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Form(
@@ -250,46 +312,6 @@ class _IssueReportPageState extends State<IssueReportPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
-
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: _pickImage,
-                  icon: Icon(Icons.photo_camera),
-                  label: Text(
-                    _pickedImage == null
-                        ? "Upload Photo (optional)"
-                        : "Photo Selected",
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 14),
-                    foregroundColor: Colors.brown[800],
-                    side: BorderSide(color: Colors.brown.shade300),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 12),
-
-              // Show selected photo if any
-              if (_pickedImage != null)
-                Row(
-                  children: [
-                    Image.file(
-                      _pickedImage!,
-                      height: 150,
-                      width: 150,
-                      fit: BoxFit.cover,
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.close, color: Colors.red),
-                      onPressed: _removeImage,
-                    ),
-                  ],
-                ),
               SizedBox(height: 30),
 
               SizedBox(
@@ -300,7 +322,12 @@ class _IssueReportPageState extends State<IssueReportPage> {
                       _isSubmitting
                           ? CircularProgressIndicator(color: Colors.white)
                           : Text('Submit Report', style: GoogleFonts.poppins()),
-                  onPressed: _isSubmitting ? null : _submitReport,
+                  onPressed:
+                      _isSubmitting
+                          ? null
+                          : () {
+                            _submitReport(context);
+                          },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.brown[700],
                     foregroundColor: Colors.white,
@@ -313,6 +340,75 @@ class _IssueReportPageState extends State<IssueReportPage> {
               ),
             ],
           ),
+        ),
+      ),
+
+      drawer: Drawer(
+        backgroundColor: Colors.brown[100],
+        child: Column(
+          children: [
+            Container(
+              color: Colors.brown[700],
+              padding: const EdgeInsets.symmetric(vertical: 32),
+              width: double.infinity,
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.brown[300],
+                    child: Text(
+                      username.isNotEmpty ? username[0].toUpperCase() : '?',
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 26,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 12),
+                  Text(
+                    username,
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    _userEmail,
+                    style: GoogleFonts.poppins(
+                      fontSize: 12,
+                      color: Colors.white70,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.bug_report_rounded, color: Colors.brown[800]),
+              title: Text('Report Issue', style: GoogleFonts.poppins()),
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.history, color: Colors.brown[800]),
+              title: Text('My Reports', style: GoogleFonts.poppins()),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyReportsPage()),
+                );
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.logout, color: Colors.red),
+              title: Text('Sign Out', style: GoogleFonts.poppins()),
+              onTap: _showSignOutDialog,
+            ),
+          ],
         ),
       ),
     );
