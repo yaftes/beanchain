@@ -1,6 +1,5 @@
 import 'package:beanchain/features/auth/presentation/pages/auth_gate.dart';
 import 'package:beanchain/features/coffee/data/models/product.dart';
-import 'package:beanchain/features/coffee/presentation/pages/issue_report_page.dart';
 import 'package:beanchain/features/coffee/presentation/widgets/info_box.dart';
 import 'package:beanchain/features/coffee/presentation/widgets/price_box.dart';
 import 'package:beanchain/features/coffee/presentation/widgets/price_breakdown.dart';
@@ -27,11 +26,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.brown,
-        title: Center(
-          child: const Text(
-            "Product Details",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),
+        elevation: 4,
+        centerTitle: true,
+        title: Text(
+          "Product Details",
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
@@ -52,12 +56,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               Container(
                 height: 220,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(16),
                   gradient: LinearGradient(
                     colors: [
-                      Colors.black.withOpacity(0.5),
+                      Colors.black.withOpacity(0.4),
                       Colors.transparent,
-                      Colors.black.withOpacity(0.5),
+                      Colors.black.withOpacity(0.4),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -73,20 +77,24 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   children: [
                     Text(
                       product.name,
-                      style: const TextStyle(
+                      style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
-                        shadows: [Shadow(color: Colors.black26, blurRadius: 4)],
+                        shadows: const [
+                          Shadow(color: Colors.black38, blurRadius: 6),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       product.description,
-                      style: const TextStyle(
+                      style: GoogleFonts.poppins(
                         color: Colors.white70,
                         fontSize: 13,
-                        shadows: [Shadow(color: Colors.black26, blurRadius: 2)],
+                        shadows: const [
+                          Shadow(color: Colors.black26, blurRadius: 3),
+                        ],
                       ),
                     ),
                   ],
@@ -104,107 +112,136 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               crossAxisCount: 2,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              mainAxisExtent: 55,
+              mainAxisExtent: 70,
             ),
             children: [
-              InfoBox(label: 'Region', value: product.region),
-              InfoBox(label: 'Altitude', value: '${product.farmAltitude}m'),
-              InfoBox(label: 'Bean Type', value: product.beanType),
-              InfoBox(
-                label: 'Harvest Year',
-                value: product.harvestYear.toString(),
+              _fancyCard(InfoBox(label: 'Region', value: product.region)),
+              _fancyCard(
+                InfoBox(label: 'Altitude', value: '${product.farmAltitude}m'),
+              ),
+              _fancyCard(InfoBox(label: 'Bean Type', value: product.beanType)),
+              _fancyCard(
+                InfoBox(
+                  label: 'Harvest Year',
+                  value: product.harvestYear.toString(),
+                ),
               ),
             ],
           ),
 
           const SizedBox(height: 24),
 
-          Row(
-            children: [
-              PriceBox(
-                label: "Farm Price",
-                price: product.initialPrice,
-                color: Colors.green,
-              ),
-              const Spacer(),
-              const Icon(Icons.arrow_forward, color: Colors.grey),
-              const Spacer(),
-              PriceBox(
-                label: "Retail Price",
-                price: product.finalPrice,
-                color: Colors.orange,
-              ),
-            ],
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: _fancyDecoration(),
+            child: Row(
+              children: [
+                PriceBox(
+                  label: "Farm Price",
+                  price: product.initialPrice,
+                  color: Colors.green,
+                ),
+                const Spacer(),
+                const Icon(Icons.arrow_forward, color: Colors.grey),
+                const Spacer(),
+                PriceBox(
+                  label: "Retail Price",
+                  price: product.finalPrice,
+                  color: Colors.orange,
+                ),
+              ],
+            ),
           ),
 
-          const SizedBox(height: 15),
+          const SizedBox(height: 20),
 
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Text(
-              "Supply Chain Journey",
-              style: TextStyle(color: Colors.brown),
+          Text(
+            "Supply Chain Journey",
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.brown,
             ),
           ),
           const SizedBox(height: 8),
-          SupplyChainTimeline(
-            stages: product.stages,
-            currentStage: "${product.currentStage}",
-            onStageTap: (i) => setState(() => selectedStageIndex = i),
+          _fancyCard(
+            SupplyChainTimeline(
+              stages: product.stages,
+              currentStage: "${product.currentStage}",
+              onStageTap: (i) => setState(() => selectedStageIndex = i),
+            ),
           ),
 
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Text("Stage Details", style: TextStyle(color: Colors.brown)),
-          ),
-          const SizedBox(height: 8),
-          StageDetail(stage: stage),
-
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Text(
-              "Price Breakdown",
-              style: TextStyle(color: Colors.brown),
+          const SizedBox(height: 16),
+          Text(
+            "Stage Details",
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.brown,
             ),
           ),
           const SizedBox(height: 8),
-          PriceBreakdown(stages: product.stages),
-          const SizedBox(height: 10),
+          _fancyCard(StageDetail(stage: stage)),
 
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AuthGate()),
-                  );
-                },
-                icon: const Icon(Icons.feedback_rounded, color: Colors.white),
-                label: Text(
-                  "Report an Issue",
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.brown[700],
-                  elevation: 3,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
+          const SizedBox(height: 16),
+          Text(
+            "Price Breakdown",
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.brown,
+            ),
+          ),
+          const SizedBox(height: 8),
+          _fancyCard(PriceBreakdown(stages: product.stages)),
+
+          const SizedBox(height: 20),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AuthGate()),
+              );
+            },
+            icon: const Icon(Icons.feedback_rounded, color: Colors.white),
+            label: Text(
+              "Report an Issue",
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.brown[700],
+              elevation: 4,
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _fancyCard(Widget child) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: _fancyDecoration(),
+      child: child,
+    );
+  }
+
+  BoxDecoration _fancyDecoration() {
+    return BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      boxShadow: const [
+        BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(2, 4)),
+      ],
     );
   }
 }

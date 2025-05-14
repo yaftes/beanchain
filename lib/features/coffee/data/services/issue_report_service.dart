@@ -12,11 +12,9 @@ class IssueReportService {
     required String description,
   }) async {
     final user = _auth.currentUser;
-
     if (user == null) return;
-
     await _reports.add({
-      "userId": user.uid,
+      "userId": user.email,
       "batchId": batchId,
       "issueType": issueType,
       "description": description,

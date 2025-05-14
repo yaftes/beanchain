@@ -33,7 +33,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
     // Simulate fetching from backend (e.g., GET api/coffee/{productId})
     print("Fetching details from api/coffee/$productId");
 
-    await Future.delayed(Duration(seconds: 2)); // simulate API
+    await Future.delayed(Duration(seconds: 2)); 
 
     if (!mounted) return;
     Navigator.push(
@@ -60,12 +60,14 @@ class _QRScannerPageState extends State<QRScannerPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text(
-          'Scan Coffee QR',
-          style: GoogleFonts.poppins(color: Colors.white),
+        automaticallyImplyLeading: false,
+        title: Center(
+          child: Text(
+            'Scan Coffee QR',
+            style: GoogleFonts.poppins(color: Colors.white),
+          ),
         ),
         backgroundColor: Colors.brown[700],
-        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Stack(
         children: [
@@ -75,7 +77,6 @@ class _QRScannerPageState extends State<QRScannerPage> {
             onDetect: _onDetect,
           ),
 
-          // Overlay Box
           Center(
             child: Container(
               height: 250,

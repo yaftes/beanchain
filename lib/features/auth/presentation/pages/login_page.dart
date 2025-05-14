@@ -3,7 +3,6 @@ import 'package:beanchain/features/auth/presentation/pages/register_page.dart';
 import 'package:beanchain/features/auth/presentation/widgets/input_decoration.dart';
 import 'package:beanchain/features/coffee/presentation/pages/issue_report_page.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginPage extends StatefulWidget {
@@ -19,14 +18,48 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   final AuthServices _authServices = AuthServices();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final String welcomeText = "Unlock the Story Behind Every Sip";
-  final String subText = "Sign in to track your coffee journey!";
 
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
+  late Animation<Offset> _textSlideAnimation;
 
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animationController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack),
+    );
+
+    _textSlideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.5),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
+
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   void _showErrorDialog(String message) {
     showDialog(
@@ -71,9 +104,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
   }
 
-  void signInWithEmail(BuildContext context) async {
+  void signInWithEmail() async {
     if (!_formKey.currentState!.validate()) return;
-
     setState(() => _isLoading = true);
 
     final user = await _authServices.signInWithEmail(
@@ -95,7 +127,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     }
   }
 
-  void signInWithGoogle(BuildContext context) async {
+  void signInWithGoogle() async {
     setState(() => _isLoading = true);
 
     final user = await _authServices.signInWithGoogle();
@@ -108,37 +140,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         MaterialPageRoute(builder: (context) => IssueReportPage()),
       );
     } else {
-      _showErrorDialog(
-        "Sorry, failed to login. Please check your Internet Connection.",
-      );
+      _showErrorDialog("Google login failed. Check your connection.");
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    );
-
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
-    );
-
-    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeOutBack),
-    );
-
-    _animationController.forward();
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
   }
 
   @override
@@ -173,7 +176,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                             child: ScaleTransition(
                               scale: _scaleAnimation,
                               child: Text(
-                                welcomeText,
+                                "Unlock the Story Behind Every Sip",
                                 style: GoogleFonts.poppins(
                                   fontSize: 40,
                                   fontWeight: FontWeight.w600,
@@ -184,13 +187,16 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                             ),
                           ),
                           const SizedBox(height: 10),
-                          Text(
-                            subText,
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              color: Colors.white,
+                          SlideTransition(
+                            position: _textSlideAnimation,
+                            child: Text(
+                              "Sign in to track your coffee journey!",
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 40),
 
@@ -204,9 +210,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                             ),
                             keyboardType: TextInputType.emailAddress,
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
+                              if (value == null || value.isEmpty)
                                 return 'Email is required';
-                              }
                               if (!RegExp(
                                 r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
                               ).hasMatch(value)) {
@@ -227,12 +232,10 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                             ),
                             obscureText: true,
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
+                              if (value == null || value.isEmpty)
                                 return 'Password is required';
-                              }
-                              if (value.length < 6) {
+                              if (value.length < 6)
                                 return 'Password must be at least 6 characters';
-                              }
                               return null;
                             },
                           ),
@@ -243,7 +246,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                 color: Colors.white,
                               )
                               : ElevatedButton(
-                                onPressed: () => signInWithEmail(context),
+                                onPressed: signInWithEmail,
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.brown[600],
                                   foregroundColor: Colors.white,
@@ -251,79 +254,43 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
-                                  elevation: 5,
                                 ),
                                 child: Text(
                                   "Login",
                                   style: GoogleFonts.poppins(
                                     fontSize: 20,
-                                    color: Colors.white,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 30),
 
-                          Row(
-                            children: [
-                              Expanded(
-                                child: ElevatedButton.icon(
-                                  onPressed: () => signInWithGoogle(context),
-                                  icon: const Icon(
-                                    FontAwesomeIcons.google,
-                                    color: Colors.amberAccent,
-                                  ),
-                                  label: Text(
-                                    "Google",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                    minimumSize: const Size.fromHeight(50),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      side: const BorderSide(
-                                        color: Colors.brown,
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                          ElevatedButton.icon(
+                            onPressed: signInWithGoogle,
+                            icon: Image.asset(
+                              'assets/images/google_logo.png',
+                              height: 24,
+                              width: 24,
+                            ),
+
+                            label: Text(
+                              "Sign in with Google",
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                color: Colors.black,
                               ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: ElevatedButton.icon(
-                                  onPressed:
-                                      () => print("Facebook login tapped"),
-                                  icon: const Icon(
-                                    FontAwesomeIcons.facebook,
-                                    color: Colors.blue,
-                                  ),
-                                  label: Text(
-                                    "Facebook",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                    minimumSize: const Size.fromHeight(50),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      side: const BorderSide(
-                                        color: Colors.blue,
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              minimumSize: const Size.fromHeight(50),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: const BorderSide(color: Colors.brown),
                               ),
-                            ],
+                            ),
                           ),
-                          const SizedBox(height: 12),
 
+                          const SizedBox(height: 12),
                           GestureDetector(
                             onTap:
                                 () => Navigator.push(

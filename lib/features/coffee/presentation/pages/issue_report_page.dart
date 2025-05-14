@@ -1,5 +1,6 @@
 import 'package:beanchain/features/auth/data/services/auth_services.dart';
 import 'package:beanchain/features/coffee/data/services/issue_report_service.dart';
+import 'package:beanchain/features/coffee/presentation/pages/home_page.dart';
 import 'package:beanchain/features/coffee/presentation/pages/my_reports_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -132,10 +133,14 @@ class _IssueReportPageState extends State<IssueReportPage> {
                         style: GoogleFonts.poppins(color: Colors.brown),
                       ),
                     ),
+
                     ElevatedButton(
                       onPressed: () async {
                         await _authService.signOut();
-                        Navigator.of(context).pop();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomePage()),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.redAccent,
@@ -169,12 +174,16 @@ class _IssueReportPageState extends State<IssueReportPage> {
         backgroundColor: Colors.brown[700],
         foregroundColor: Colors.white,
         title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircleAvatar(
-              backgroundColor: Colors.brown[300],
+              backgroundColor: Colors.white,
               child: Text(
                 username.isNotEmpty ? username[0].toUpperCase() : '?',
-                style: GoogleFonts.poppins(color: Colors.white),
+                style: GoogleFonts.poppins(
+                  color: Colors.brown[300],
+                  fontSize: 25,
+                ),
               ),
             ),
             SizedBox(width: 10),
@@ -355,11 +364,11 @@ class _IssueReportPageState extends State<IssueReportPage> {
                 children: [
                   CircleAvatar(
                     radius: 30,
-                    backgroundColor: Colors.brown[300],
+                    backgroundColor: Colors.white,
                     child: Text(
                       username.isNotEmpty ? username[0].toUpperCase() : '?',
                       style: GoogleFonts.poppins(
-                        color: Colors.white,
+                        color: Colors.brown[300],
                         fontSize: 26,
                       ),
                     ),

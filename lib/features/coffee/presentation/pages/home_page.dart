@@ -25,12 +25,39 @@ class HomePage extends StatelessWidget {
               ),
               Positioned.fill(
                 child: Center(
-                  child: Text(
-                    "Coffee Tracker",
-                    style: GoogleFonts.poppins(
-                      fontSize: 30,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          "assets/images/coffee_bean.png",
+                          width: 80,
+                          height: 80,
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          "Coffee Tracker",
+                          style: GoogleFonts.poppins(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 4,
+                                color: Colors.black54,
+                                offset: Offset(2, 2),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -55,7 +82,7 @@ class HomePage extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    SizedBox(height: 50),
+                    SizedBox(height: 70),
                     Center(
                       child: AnimatedTextKit(
                         repeatForever: true,

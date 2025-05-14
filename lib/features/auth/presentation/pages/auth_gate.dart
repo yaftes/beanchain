@@ -1,7 +1,5 @@
-import 'package:beanchain/core/mock_data.dart';
 import 'package:beanchain/features/auth/presentation/pages/login_page.dart';
 import 'package:beanchain/features/coffee/presentation/pages/issue_report_page.dart';
-import 'package:beanchain/features/coffee/presentation/pages/product_details.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

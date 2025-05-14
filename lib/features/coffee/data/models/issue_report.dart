@@ -3,7 +3,7 @@ class IssueReport {
   String issueType;
   String description;
   DateTime reportDate;
-  // i don't what we use for
+ 
   IssueReport({
     required this.batchId,
     required this.issueType,
@@ -19,4 +19,5 @@ class IssueReport {
       reportDate: json["reportDate"],
     );
   }
+
 }

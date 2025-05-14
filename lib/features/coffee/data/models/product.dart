@@ -1,6 +1,7 @@
 import 'package:beanchain/features/coffee/data/models/stage.dart';
 
 class Product {
+  
   final String id;
   final String name;
   final String origin;
