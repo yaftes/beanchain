@@ -26,6 +26,8 @@ class _RegisterPageState extends State<RegisterPage>
   late Animation<double> _scaleAnimation;
 
   bool _isLoading = false;
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
   @override
   void initState() {
@@ -86,7 +88,7 @@ class _RegisterPageState extends State<RegisterPage>
         MaterialPageRoute(builder: (context) => const IssueReportPage()),
       );
     } else {
-      _showErrorDialog("Registration failed. Try again.");
+      _showErrorDialog("Already registered with this email.");
     }
   }
 
@@ -138,7 +140,6 @@ class _RegisterPageState extends State<RegisterPage>
                         style: GoogleFonts.poppins(color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
-
                       const SizedBox(height: 20),
 
                       TextFormField(
@@ -165,12 +166,26 @@ class _RegisterPageState extends State<RegisterPage>
 
                       TextFormField(
                         controller: _passwordController,
+                        obscureText: _obscurePassword,
                         decoration: buildinputDecoration(
                           "Password",
                           "********",
                           Icons.lock,
+                        ).copyWith(
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: Colors.brown,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
+                            },
+                          ),
                         ),
-                        obscureText: true,
                         validator:
                             (value) =>
                                 value == null || value.length < 6
@@ -181,12 +196,27 @@ class _RegisterPageState extends State<RegisterPage>
 
                       TextFormField(
                         controller: _confirmController,
+                        obscureText: _obscureConfirmPassword,
                         decoration: buildinputDecoration(
                           "Confirm Password",
                           "********",
                           Icons.lock_outline,
+                        ).copyWith(
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureConfirmPassword
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: Colors.brown,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscureConfirmPassword =
+                                    !_obscureConfirmPassword;
+                              });
+                            },
+                          ),
                         ),
-                        obscureText: true,
                         validator:
                             (value) =>
                                 value != _passwordController.text

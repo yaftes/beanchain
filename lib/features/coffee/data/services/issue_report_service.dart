@@ -25,6 +25,6 @@ class IssueReportService {
 
   Stream<QuerySnapshot> fetchIssueReports() {
     final user = _auth.currentUser;
-    return _reports.where("userId", isEqualTo: user?.uid).snapshots();
+    return _reports.where("userId", isEqualTo: user?.email).snapshots();
   }
 }

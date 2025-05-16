@@ -29,7 +29,7 @@ class _MyReportsPageState extends State<MyReportsPage> {
         stream: _issueReporService.fetchIssueReports(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
@@ -63,17 +63,19 @@ class _MyReportsPageState extends State<MyReportsPage> {
             itemCount: reports.length,
             itemBuilder: (context, index) {
               final report = reports[index];
+
               return Container(
                 margin: const EdgeInsets.only(bottom: 20),
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.brown[100],
-                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.white.withOpacity(0.85),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: Colors.brown.shade200, width: 1),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.brown.withOpacity(0.2),
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
+                      color: Colors.brown.withOpacity(0.1),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
                     ),
                   ],
                 ),
@@ -81,62 +83,86 @@ class _MyReportsPageState extends State<MyReportsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(
-                          Icons.report_problem_rounded,
-                          size: 36,
-                          color: Colors.brown[800],
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.brown[200],
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            Icons.report_problem_rounded,
+                            size: 28,
+                            color: Colors.brown[900],
+                          ),
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 12),
                         Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                report['issueType'],
+                                style: GoogleFonts.poppins(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.brown[800],
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Batch ID: ${report['batchId']}',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13,
+                                  color: Colors.grey[700],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.greenAccent,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                           child: Text(
-                            report['issueType'],
+                            'Reported',
                             style: GoogleFonts.poppins(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.brown[900],
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.qr_code_2_rounded,
-                          size: 20,
-                          color: Colors.brown[700],
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          'Batch ID: ${report['batchId']}',
-                          style: GoogleFonts.poppins(fontSize: 14),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 14),
                     Text(
                       report['description'],
                       style: GoogleFonts.poppins(
-                        fontSize: 15,
-                        color: Colors.brown[800],
+                        fontSize: 14.5,
+                        color: Colors.brown[900],
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 16),
                     Row(
                       children: [
                         Icon(
                           Icons.calendar_today_outlined,
                           size: 16,
-                          color: Colors.grey[700],
+                          color: Colors.grey[600],
                         ),
                         const SizedBox(width: 6),
                         Text(
                           report['reportDate'],
                           style: GoogleFonts.poppins(
                             fontSize: 13,
-                            color: Colors.grey[700],
+                            color: Colors.grey[600],
                           ),
                         ),
                       ],

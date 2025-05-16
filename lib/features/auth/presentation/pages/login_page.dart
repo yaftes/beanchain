@@ -25,6 +25,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   late Animation<Offset> _textSlideAnimation;
 
   bool _isLoading = false;
+  bool _obscurePassword = true;
 
   @override
   void initState() {
@@ -229,8 +230,22 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                               'Password',
                               '12345678',
                               Icons.lock,
+                            ).copyWith(
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _obscurePassword
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                  color: Colors.brown,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _obscurePassword = !_obscurePassword;
+                                  });
+                                },
+                              ),
                             ),
-                            obscureText: true,
+                            obscureText: _obscurePassword,
                             validator: (value) {
                               if (value == null || value.isEmpty)
                                 return 'Password is required';
@@ -272,7 +287,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                               height: 24,
                               width: 24,
                             ),
-
                             label: Text(
                               "Sign in with Google",
                               style: GoogleFonts.poppins(
