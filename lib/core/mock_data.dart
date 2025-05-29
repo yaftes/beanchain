@@ -1,53 +1,41 @@
 import 'package:beanchain/features/coffee/data/models/product.dart';
 import 'package:beanchain/features/coffee/data/models/stage.dart';
 
-List<Stage> mockStages = [
-  Stage(
-    id: '1',
-    name: 'Harvesting',
-    location: 'Ethiopia, Sidamo',
-    timestamp: DateTime.now().subtract(Duration(days: 30)),
-    details: 'Coffee beans are harvested manually.',
-    price: 5.0,
-  ),
-  Stage(
-    id: '2',
-    name: 'Processing',
-    location: 'Ethiopia, Sidamo',
-    timestamp: DateTime.now().subtract(Duration(days: 20)),
-    details: 'Beans are processed and sorted.',
-    price: 3.5,
-  ),
-  Stage(
-    id: '3',
-    name: 'Roasting',
-    location: 'Ethiopia, Sidamo',
-    timestamp: DateTime.now().subtract(Duration(days: 10)),
-    details: 'Beans are roasted at high temperatures.',
-    price: 10.0,
-  ),
-  Stage(
-    id: '4',
-    name: 'Packaging',
-    location: 'Ethiopia, Sidamo',
-    timestamp: DateTime.now().subtract(Duration(days: 5)),
-    details: 'Beans are packed and ready for shipment.',
-    price: 2.0,
-  ),
-];
+final mockProduct = Product(
+  id: 'prod001',
+  name: 'Ethiopian Yirgacheffe',
+  origin: 'Yirgacheffe, Ethiopia',
+  description: 'A bright and floral coffee with citrus notes.',
+  altitude: 1900,
+  bean_type: 'Arabica',
+  harvest_year: 2024,
 
-Product mockProduct = Product(
-  id: 'product-001',
-  name: 'Ethiopian Sidamo Coffee',
-  origin: 'Ethiopia',
-  stages: mockStages,
-  finalPrice: 25.0,
-  region: 'Sidamo',
-  farmAltitude: 1500,
-  beanType: 'Arabica',
-  harvestYear: 2024,
-  initialPrice: 15.0,
-  description:
-      'Premium grade Ethiopian Sidamo coffee with rich, aromatic flavor.',
-  currentStage: 2,
+  journey: [
+    Stage(
+      stage: 'Farming',
+      company: 'GreenField Farms',
+      location: 'Yirgacheffe',
+      date_completed: DateTime(2024, 3, 15),
+      status: 'Harvested and sorted',
+      price_after_stage: 2.8,
+    ),
+
+    Stage(
+      stage: 'Processing',
+      company: 'Blue Nile Processing Co.',
+      location: 'Sidama',
+      date_completed: DateTime(2024, 4, 2),
+      status: 'Washed and dried',
+      price_after_stage: 4.20,
+    ),
+
+    Stage(
+      stage: 'Export',
+      company: 'Ethio Exporters Ltd.',
+      location: 'Addis Ababa',
+      date_completed: DateTime(2024, 4, 25),
+      status: 'Packaged and shipped',
+      price_after_stage: 7.80,
+    ),
+  ],
 );

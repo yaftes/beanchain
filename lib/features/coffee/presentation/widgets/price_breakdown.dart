@@ -22,12 +22,12 @@ class PriceBreakdown extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      stage.name,
+                      "Hello",
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                   ),
                   Text(
-                    '\$${stage.price.toStringAsFixed(2)}',
+                    'Hello',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],

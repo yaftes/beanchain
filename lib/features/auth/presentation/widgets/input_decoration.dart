@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-
 // input decoration
 InputDecoration buildinputDecoration(String label, String hint, IconData icon) {
   return InputDecoration(
     labelText: label,
     hintText: hint,
+    hintStyle: TextStyle(color: Colors.black45),
     errorStyle: TextStyle(color: Colors.white),
     prefixIcon: Icon(icon, color: Colors.brown),
     filled: true,
@@ -17,6 +17,4 @@ InputDecoration buildinputDecoration(String label, String hint, IconData icon) {
       borderSide: BorderSide.none,
     ),
   );
-
-  
 }

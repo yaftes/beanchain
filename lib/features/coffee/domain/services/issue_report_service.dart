@@ -10,6 +10,7 @@ class IssueReportService {
     required String batchId,
     required String issueType,
     required String description,
+    required int rating,
   }) async {
     final user = _auth.currentUser;
     if (user == null) return;
@@ -20,6 +21,7 @@ class IssueReportService {
       "description": description,
       "reportDate": DateFormat('yyyy-MM-dd').format(DateTime.now()),
       "timestamp": FieldValue.serverTimestamp(),
+      "rating": rating,
     });
   }
 

@@ -1,4 +1,4 @@
-import 'package:beanchain/features/coffee/data/services/issue_report_service.dart';
+import 'package:beanchain/features/coffee/domain/services/issue_report_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -55,6 +55,7 @@ class _MyReportsPageState extends State<MyReportsPage> {
                   'description':
                       doc['description'] ?? 'No description provided',
                   'reportDate': doc['reportDate'] ?? 'No date provided',
+                  'rating': doc['rating'] ?? "No rating provided",
                 };
               }).toList();
 
@@ -150,20 +151,46 @@ class _MyReportsPageState extends State<MyReportsPage> {
                       ),
                     ),
                     const SizedBox(height: 16),
+
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Icon(
-                          Icons.calendar_today_outlined,
-                          size: 16,
-                          color: Colors.grey[600],
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.calendar_today_outlined,
+                              size: 16,
+                              color: Colors.grey[600],
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              report['reportDate'],
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 6),
-                        Text(
-                          report['reportDate'],
-                          style: GoogleFonts.poppins(
-                            fontSize: 13,
-                            color: Colors.grey[600],
-                          ),
+                        Row(
+                          children: [
+                            Text(
+                              "Rating",
+                              style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.brown,
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              "${report['rating']}",
+                              style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.amberAccent,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

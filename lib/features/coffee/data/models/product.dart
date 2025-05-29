@@ -1,72 +1,37 @@
 import 'package:beanchain/features/coffee/data/models/stage.dart';
 
 class Product {
-  
   final String id;
   final String name;
-  final String origin;
-  final List<Stage> stages;
-  final double finalPrice;
-  final String region;
-  final int farmAltitude;
-  final String beanType;
-  final int harvestYear;
-  final double initialPrice;
   final String description;
-  final int currentStage;
+  final String origin;
+  final int altitude;
+  final String bean_type;
+  final int harvest_year;
+  final List<Stage> journey;
 
   Product({
     required this.id,
     required this.name,
     required this.origin,
-    required this.stages,
-    required this.finalPrice,
-    required this.region,
-    required this.farmAltitude,
-    required this.beanType,
-    required this.harvestYear,
-    required this.initialPrice,
     required this.description,
-    required this.currentStage,
+    required this.altitude,
+    required this.bean_type,
+    required this.harvest_year,
+    required this.journey,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
+    final productJson = json['product'];
     return Product(
-      id: json['id'] ?? '',
-      name: json['name'] ?? 'Unknown',
-      origin: json['origin'] ?? 'Unknown origin',
-      finalPrice:
-          (json['finalPrice'] is num)
-              ? (json['finalPrice'] as num).toDouble()
-              : 0.0,
-      stages: (json['stages'] as List).map((e) => Stage.fromJson(e)).toList(),
-      region: json['region'] ?? 'Unknown region',
-      farmAltitude: json['farmAltitude'] ?? 0,
-      beanType: json['beanType'] ?? 'Unknown type',
-      harvestYear: json['harvestYear'] ?? 0,
-      initialPrice:
-          (json['initialPrice'] is num)
-              ? (json['initialPrice'] as num).toDouble()
-              : 0.0,
-      description: json['description'] ?? 'No description available',
-      currentStage: json['currentStage'] ?? 0,
+      id: productJson['id'],
+      name: productJson['name'],
+      origin: productJson['origin'],
+      description: productJson['description'],
+      altitude: productJson['altitude'],
+      bean_type: productJson['bean_type'],
+      harvest_year: productJson['harvest_year'],
+      journey: (json['journey'] as List).map((e) => Stage.fromJson(e)).toList(),
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'origin': origin,
-      'finalPrice': finalPrice,
-      'stages': stages.map((e) => e.toJson()).toList(),
-      'region': region,
-      'farmAltitude': farmAltitude,
-      'beanType': beanType,
-      'harvestYear': harvestYear,
-      'initialPrice': initialPrice,
-      'description': description,
-      'currentStage': currentStage,
-    };
   }
 }

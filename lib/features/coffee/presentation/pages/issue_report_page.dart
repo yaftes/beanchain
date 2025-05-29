@@ -1,14 +1,16 @@
 import 'package:beanchain/features/auth/data/services/auth_services.dart';
-import 'package:beanchain/features/coffee/data/services/issue_report_service.dart';
+import 'package:beanchain/features/coffee/domain/services/issue_report_service.dart';
 import 'package:beanchain/features/coffee/presentation/pages/home_page.dart';
 import 'package:beanchain/features/coffee/presentation/pages/my_reports_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 
 class IssueReportPage extends StatefulWidget {
   const IssueReportPage({super.key});
+
   @override
   State<IssueReportPage> createState() => _IssueReportPageState();
 }
@@ -22,6 +24,7 @@ class _IssueReportPageState extends State<IssueReportPage> {
 
   String? _selectedIssue;
   bool _isSubmitting = false;
+  int rating = 0;
 
   final List<String> _issueTypes = [
     'Packaging Issue',
@@ -30,6 +33,24 @@ class _IssueReportPageState extends State<IssueReportPage> {
     'Taste Issue',
     'Other',
   ];
+
+  List<Color> iconColors = List.generate(5, (_) => Colors.white);
+
+  void _changeRatingIconColor({required int index}) {
+    if (index >= 0 && index < iconColors.length) {
+      setState(() {
+        if (iconColors[index] == const Color.fromARGB(255, 169, 133, 3)) {
+          iconColors[index] = Colors.white;
+          rating -= 1;
+        } else {
+          iconColors[index] = const Color.fromARGB(255, 169, 133, 3);
+          rating += 1;
+        }
+
+        rating = rating.clamp(0, 5);
+      });
+    }
+  }
 
   String _currentDate() {
     return DateFormat('yyyy-MM-dd').format(DateTime.now());
@@ -43,18 +64,26 @@ class _IssueReportPageState extends State<IssueReportPage> {
     try {
       await _issueReportService.createIssueReport(
         batchId: _batchIdController.text,
-        issueType: _selectedIssue ?? "",
+
+        issueType: _selectedIssue ?? "N/A",
         description: _descriptionController.text,
+        rating: rating,
       );
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Issue reported successfully!'),
           backgroundColor: Colors.green,
         ),
       );
+
       _batchIdController.clear();
       _descriptionController.clear();
-      setState(() => _selectedIssue = null);
+
+      setState(() {
+        iconColors = List.generate(5, (_) => Colors.white);
+        rating = 0;
+        _selectedIssue = null;
+      });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -133,13 +162,14 @@ class _IssueReportPageState extends State<IssueReportPage> {
                         style: GoogleFonts.poppins(color: Colors.brown),
                       ),
                     ),
-
                     ElevatedButton(
                       onPressed: () async {
                         await _authService.signOut();
-                        Navigator.push(
+
+                        Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(builder: (context) => HomePage()),
+                          (Route<dynamic> route) => false,
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -168,6 +198,10 @@ class _IssueReportPageState extends State<IssueReportPage> {
   @override
   Widget build(BuildContext context) {
     String username = _getUsernameFromEmail(_userEmail);
+
+    print('BUILD METHOD CALLED: Current _selectedIssue: $_selectedIssue');
+    print('BUILD METHOD CALLED: Issue Types: $_issueTypes');
+
     return Scaffold(
       backgroundColor: Colors.brown[50],
       appBar: AppBar(
@@ -199,7 +233,7 @@ class _IssueReportPageState extends State<IssueReportPage> {
         ),
         actions: [
           PopupMenuButton<String>(
-            icon: Icon(Icons.more_vert, color: Colors.white),
+            icon: const Icon(Icons.more_vert, color: Colors.white),
             onSelected: (String value) {
               if (value == 'logout') {
                 _showSignOutDialog();
@@ -211,8 +245,8 @@ class _IssueReportPageState extends State<IssueReportPage> {
                     value: 'logout',
                     child: Row(
                       children: [
-                        Icon(Icons.logout, color: Colors.redAccent),
-                        SizedBox(width: 10),
+                        const Icon(Icons.logout, color: Colors.redAccent),
+                        const SizedBox(width: 10),
                         Text('Sign Out', style: GoogleFonts.poppins()),
                       ],
                     ),
@@ -221,28 +255,34 @@ class _IssueReportPageState extends State<IssueReportPage> {
           ),
         ],
       ),
-
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.symmetric(horizontal: 25),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                Icons.bug_report_rounded,
-                size: 70,
-                color: Colors.brown[800],
-              ),
-              SizedBox(height: 16),
-              Text(
-                'Found an issue with your coffee?',
-                style: GoogleFonts.poppins(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
+              Center(
+                child: SizedBox(
+                  height: 100,
+                  width: 100,
+                  child: Lottie.asset(
+                    "assets/lottie/coffee_time.json",
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 16),
+              Center(
+                child: Text(
+                  'Found an issue with your coffee?',
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
               Text(
                 'Please fill out this form to help us investigate.',
                 style: GoogleFonts.poppins(
@@ -250,14 +290,13 @@ class _IssueReportPageState extends State<IssueReportPage> {
                   color: Colors.brown[700],
                 ),
               ),
-              SizedBox(height: 32),
-
+              const SizedBox(height: 32),
               TextFormField(
                 controller: _batchIdController,
                 style: GoogleFonts.poppins(),
                 decoration: InputDecoration(
                   labelText: 'Batch ID',
-                  prefixIcon: Icon(Icons.numbers),
+                  prefixIcon: const Icon(Icons.numbers),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -269,18 +308,19 @@ class _IssueReportPageState extends State<IssueReportPage> {
                             ? 'Please enter batch ID'
                             : null,
               ),
-              SizedBox(height: 20),
-
+              const SizedBox(height: 20),
               DropdownButtonFormField<String>(
                 value: _selectedIssue,
                 items:
                     _issueTypes.map((type) {
+                      print('Creating DropdownMenuItem for value: $type');
+
                       return DropdownMenuItem(value: type, child: Text(type));
                     }).toList(),
                 onChanged: (value) => setState(() => _selectedIssue = value),
                 decoration: InputDecoration(
                   labelText: 'Issue Type',
-                  prefixIcon: Icon(Icons.report_problem_rounded),
+                  prefixIcon: const Icon(Icons.report_problem_rounded),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -289,15 +329,14 @@ class _IssueReportPageState extends State<IssueReportPage> {
                     (value) =>
                         value == null ? 'Please select issue type' : null,
               ),
-              SizedBox(height: 20),
-
+              const SizedBox(height: 20),
               TextFormField(
                 controller: _descriptionController,
                 maxLines: 5,
                 style: GoogleFonts.poppins(),
                 decoration: InputDecoration(
                   labelText: 'Describe the issue in detail',
-                  prefixIcon: Icon(Icons.description),
+                  prefixIcon: const Icon(Icons.description),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -308,28 +347,65 @@ class _IssueReportPageState extends State<IssueReportPage> {
                             ? 'Please describe the issue'
                             : null,
               ),
-              SizedBox(height: 20),
-
+              const SizedBox(height: 20),
               TextFormField(
                 initialValue: _currentDate(),
                 readOnly: true,
                 decoration: InputDecoration(
                   labelText: 'Report Date',
-                  prefixIcon: Icon(Icons.calendar_today),
+                  prefixIcon: const Icon(Icons.calendar_today),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
-              SizedBox(height: 30),
-
+              const SizedBox(height: 30),
+              // five different icon buttons
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  "Rate out of 5",
+                  style: GoogleFonts.poppins(color: Colors.brown),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () => _changeRatingIconColor(index: 0),
+                    icon: Icon(Icons.star, color: iconColors[0]),
+                    iconSize: 40,
+                  ),
+                  IconButton(
+                    onPressed: () => _changeRatingIconColor(index: 1),
+                    icon: Icon(Icons.star, color: iconColors[1]),
+                    iconSize: 40,
+                  ),
+                  IconButton(
+                    onPressed: () => _changeRatingIconColor(index: 2),
+                    icon: Icon(Icons.star, color: iconColors[2]),
+                    iconSize: 40,
+                  ),
+                  IconButton(
+                    onPressed: () => _changeRatingIconColor(index: 3),
+                    icon: Icon(Icons.star, color: iconColors[3]),
+                    iconSize: 40,
+                  ),
+                  IconButton(
+                    onPressed: () => _changeRatingIconColor(index: 4),
+                    icon: Icon(Icons.star, color: iconColors[4]),
+                    iconSize: 40,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 30),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  icon: Icon(Icons.send_rounded),
+                  icon: const Icon(Icons.send_rounded),
                   label:
                       _isSubmitting
-                          ? CircularProgressIndicator(color: Colors.white)
+                          ? const CircularProgressIndicator(color: Colors.white)
                           : Text('Submit Report', style: GoogleFonts.poppins()),
                   onPressed:
                       _isSubmitting
@@ -340,7 +416,7 @@ class _IssueReportPageState extends State<IssueReportPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.brown[700],
                     foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
@@ -351,71 +427,55 @@ class _IssueReportPageState extends State<IssueReportPage> {
           ),
         ),
       ),
-
       drawer: Drawer(
         backgroundColor: Colors.brown[100],
         child: Column(
           children: [
-            Container(
-              color: Colors.brown[700],
-              padding: const EdgeInsets.symmetric(vertical: 32),
-              width: double.infinity,
-              child: Column(
-                children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.white,
-                    child: Text(
-                      username.isNotEmpty ? username[0].toUpperCase() : '?',
-                      style: GoogleFonts.poppins(
-                        color: Colors.brown[300],
-                        fontSize: 26,
-                      ),
-                    ),
+            Stack(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: Lottie.asset(
+                    "assets/lottie/coffee_cup.json",
+                    fit: BoxFit.cover,
+                    repeat: true,
+                    animate: true,
                   ),
-                  SizedBox(height: 12),
-                  Text(
-                    username,
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    _userEmail,
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      color: Colors.white70,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
             ListTile(
-              leading: Icon(Icons.bug_report_rounded, color: Colors.brown[800]),
+              leading: const Icon(
+                Icons.bug_report_rounded,
+                color: Colors.white,
+                size: 35,
+              ),
               title: Text('Report Issue', style: GoogleFonts.poppins()),
               onTap: () {
                 Navigator.of(context).pop();
               },
             ),
             ListTile(
-              leading: Icon(Icons.history, color: Colors.brown[800]),
+              leading: const Icon(Icons.history, color: Colors.white, size: 35),
               title: Text('My Reports', style: GoogleFonts.poppins()),
               onTap: () {
                 Navigator.of(context).pop();
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => MyReportsPage()),
+                  MaterialPageRoute(
+                    builder: (context) => const MyReportsPage(),
+                  ), // Added const
                 );
               },
             ),
-            Divider(),
-            ListTile(
-              leading: Icon(Icons.logout, color: Colors.red),
-              title: Text('Sign Out', style: GoogleFonts.poppins()),
-              onTap: _showSignOutDialog,
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: ListTile(
+                leading: const Icon(Icons.logout, color: Colors.brown),
+                title: Text('Sign Out', style: GoogleFonts.poppins()),
+                onTap: _showSignOutDialog,
+              ),
             ),
           ],
         ),

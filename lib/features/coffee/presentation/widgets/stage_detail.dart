@@ -21,10 +21,6 @@ class StageDetail extends StatelessWidget {
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 6),
-
-          // Text("Timestamp: ${DateFormat.yMMMd().add_jm().format(stage.timestamp)}"),
-          const SizedBox(height: 6),
-          Text("Details: ${stage.details}"),
         ],
       ),
     );

@@ -39,9 +39,9 @@ class SupplyChainTimeline extends StatelessWidget {
         itemCount: stages.length,
         itemBuilder: (context, index) {
           final stage = stages[index];
-          final isActive = stage.name == currentStage;
+          final isActive = "lkjlsk" == currentStage;
           final isCompleted =
-              stages.indexWhere((s) => s.name == currentStage) > index;
+              stages.indexWhere((s) => "lskjdlkg" == currentStage) > index;
 
           return InkWell(
             onTap: () => onStageTap(index),
@@ -81,7 +81,7 @@ class SupplyChainTimeline extends StatelessWidget {
                                 : [],
                       ),
                       child: Icon(
-                        _getStageIcon(stage.name),
+                        _getStageIcon("another"),
                         size: 26,
                         color:
                             isActive
@@ -95,7 +95,7 @@ class SupplyChainTimeline extends StatelessWidget {
                     SizedBox(
                       width: 70,
                       child: Text(
-                        stage.name,
+                        "another",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 12,
