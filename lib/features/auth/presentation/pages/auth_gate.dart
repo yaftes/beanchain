@@ -15,11 +15,9 @@ class AuthGate extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasData) {
-          // return IssueReportPage();
-          return Center(child: Text("in"));
+          return IssueReportPage();
         }
-        // login page
-        return Center(child: Text("Login"));
+        return LoginPage();
       },
     );
   }

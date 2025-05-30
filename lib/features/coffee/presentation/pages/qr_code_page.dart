@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:beanchain/core/debugger.dart';
+import 'package:beanchain/core/mock_data.dart';
 import 'package:beanchain/features/coffee/domain/services/product_detail_service.dart';
 import 'package:beanchain/features/coffee/presentation/pages/home_page.dart';
 import 'package:beanchain/features/coffee/presentation/pages/product_details.dart';
@@ -72,12 +73,14 @@ class _QRScannerPageState extends State<QRScannerPage> {
   }
 
   Future<void> _fetchProductDetailsAndNavigate(String chainId, int id) async {
-    debugPrint("Fetching product for chainId: $chainId, id: $id");
+    debugPrintColor("Fetching product for chainId: $chainId, id: $id");
 
-    final product = await _productDetailService.fetchProduct(
-      chainId: chainId,
-      id: id,
-    );
+    // final product = await _productDetailService.fetchProduct(
+    //   chainId: chainId,
+    //   id: id,
+    // );
+    Future.delayed(Duration(seconds: 2));
+    final product = mockProduct;
 
     if (!mounted) return;
 
@@ -135,7 +138,6 @@ class _QRScannerPageState extends State<QRScannerPage> {
             onDetect: _onDetect,
           ),
 
-          // Scanner Frame
           Center(
             child: Container(
               height: 250,
@@ -147,7 +149,6 @@ class _QRScannerPageState extends State<QRScannerPage> {
             ),
           ),
 
-          // Loading Indicator
           if (_isLoading)
             Container(
               color: Colors.black.withOpacity(0.6),
@@ -156,7 +157,6 @@ class _QRScannerPageState extends State<QRScannerPage> {
               ),
             ),
 
-          // Instruction Text
           Positioned(
             bottom: 30,
             left: 0,

@@ -28,8 +28,7 @@ class HomePage extends StatelessWidget {
               Positioned.fill(
                 child: Center(
                   child: Text(
-                    // AppLocalizations.of(context)!.appTitle,
-                    "Fist",
+                    "Coffee Tracker",
                     style: GoogleFonts.poppins(
                       fontSize: 32,
                       color: Colors.white,
@@ -46,70 +45,70 @@ class HomePage extends StatelessWidget {
                 ),
               ),
 
-              Positioned(
-                top: 16,
-                right: 16,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.brown[50]?.withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.brown.shade200),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.language, color: Colors.brown),
-                      const SizedBox(width: 8),
-                      // Theme(
-                      //   data: Theme.of(context).copyWith(
-                      //     canvasColor: Colors.brown[50],
-                      //     cardColor: Colors.brown[50],
-                      //     shadowColor: Colors.brown.shade400,
-                      //     popupMenuTheme: PopupMenuThemeData(
-                      //       color: Colors.brown[50],
-                      //       shape: RoundedRectangleBorder(
-                      //         borderRadius: BorderRadius.circular(20),
-                      //       ),
-                      //       elevation: 8,
-                      //     ),
-                      //   ),
+              // Positioned(
+              //   top: 16,
+              //   right: 16,
+              //   child: Container(
+              //     padding: const EdgeInsets.symmetric(horizontal: 8),
+              //     decoration: BoxDecoration(
+              //       color: Colors.brown[50]?.withOpacity(0.8),
+              //       borderRadius: BorderRadius.circular(12),
+              //       border: Border.all(color: Colors.brown.shade200),
+              //     ),
+              //     child: Row(
+              //       mainAxisSize: MainAxisSize.min,
+              //       children: [
+              //         const Icon(Icons.language, color: Colors.brown),
+              //         const SizedBox(width: 8),
+              //         Theme(
+              //           data: Theme.of(context).copyWith(
+              //             canvasColor: Colors.brown[50],
+              //             cardColor: Colors.brown[50],
+              //             shadowColor: Colors.brown.shade400,
+              //             popupMenuTheme: PopupMenuThemeData(
+              //               color: Colors.brown[50],
+              //               shape: RoundedRectangleBorder(
+              //                 borderRadius: BorderRadius.circular(20),
+              //               ),
+              //               elevation: 8,
+              //             ),
+              //           ),
 
-                      //   child: DropdownButtonHideUnderline(
-                      //     child: DropdownButton<Locale>(
-                      //       value: currentLocale,
-                      //       icon: const Icon(
-                      //         Icons.arrow_drop_down,
-                      //         color: Colors.brown,
-                      //       ),
-                      //       dropdownColor: Colors.brown[50],
-                      //       style: GoogleFonts.poppins(
-                      //         color: Colors.brown[900],
-                      //         fontWeight: FontWeight.w600,
-                      //       ),
-                      //       items: const [
-                      //         DropdownMenuItem(
-                      //           value: Locale('en'),
-                      //           child: Text('English'),
-                      //         ),
-                      //         DropdownMenuItem(
-                      //           value: Locale('am'),
-                      //           child: Text('አማርኛ'),
-                      //         ),
-                      //       ],
-                      //       onChanged: (locale) {
-                      //         if (locale != null && onChangeLanguage != null) {
-                      //           onChangeLanguage!(locale);
-                      //         }
-                      //       },
-                      //     ),
-                      //   ),
+              //           child: DropdownButtonHideUnderline(
+              //             child: DropdownButton<Locale>(
+              //               value: currentLocale,
+              //               icon: const Icon(
+              //                 Icons.arrow_drop_down,
+              //                 color: Colors.brown,
+              //               ),
+              //               dropdownColor: Colors.brown[50],
+              //               style: GoogleFonts.poppins(
+              //                 color: Colors.brown[900],
+              //                 fontWeight: FontWeight.w600,
+              //               ),
+              //               items: const [
+              //                 DropdownMenuItem(
+              //                   value: Locale('en'),
+              //                   child: Text('English'),
+              //                 ),
+              //                 DropdownMenuItem(
+              //                   value: Locale('am'),
+              //                   child: Text('አማርኛ'),
+              //                 ),
+              //               ],
+              //               onChanged: (locale) {
+              //                 if (locale != null && onChangeLanguage != null) {
+              //                   onChangeLanguage!(locale);
+              //                 }
+              //               },
+              //             ),
+              //           ),
 
-                      // ),
-                    ],
-                  ),
-                ),
-              ),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
             ],
           ),
 
@@ -140,9 +139,9 @@ class HomePage extends StatelessWidget {
                         repeatForever: true,
                         animatedTexts: [
                           TyperAnimatedText(
-                            "lkjsldgjkl",
+                            "Because great coffee deserves a great story — follow your beans from the ground up!",
                             textStyle: GoogleFonts.poppins(
-                              fontSize: 24,
+                              fontSize: 26,
                               fontWeight: FontWeight.w600,
                               color: Colors.brown[800],
                             ),
@@ -151,7 +150,7 @@ class HomePage extends StatelessWidget {
                         ],
                         isRepeatingAnimation: true,
                         totalRepeatCount: 5,
-                        pause: const Duration(seconds: 2),
+                        pause: const Duration(seconds: 4),
                       ),
                     ),
 

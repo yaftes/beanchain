@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 
 class IssueReportService {
+
   final _reports = FirebaseFirestore.instance.collection("issue_reports");
   final _auth = FirebaseAuth.instance;
 
@@ -29,4 +30,5 @@ class IssueReportService {
     final user = _auth.currentUser;
     return _reports.where("userId", isEqualTo: user?.email).snapshots();
   }
+  
 }
